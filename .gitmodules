@@ -1,0 +1,3 @@
+[submodule "src/distributed_mapper"]
+	path = src/distributed_mapper
+	url = git@github.com:sysuxyt/distributed-mapper.git

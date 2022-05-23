@@ -1,0 +1,40 @@
+<launch>    
+    <!--- Sim Time -->
+    <param name="/use_sim_time" value="true" />
+    
+    <group ns="robot0">
+      <node pkg="rosbag" type="play" name="playbag" args="--clock xx.bag">
+        <remap from="/velodyne_points" to="velodyne_points"/>
+        <remap from="/gps_3d_pose" to="base_pose_ground_truth"/> 
+      </node>
+
+    </group>
+
+    <group ns="robot1">
+
+      <param name="idRobot" value="1"/>
+      <param name="nRobots" value="2"/>
+      <param name="baseIdx" value="100"/>
+      <param name="base_addr" value="192.168.0."/>
+      <param name="modality" value="sim"/>
+      <remap from="/clock" to="clock"/>
+
+      <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rdc_slam)/rviz/test.rviz" />
+
+
+      <node pkg="tf" type="static_transform_publisher" name="camera_init_to_map"  args="0 0 0 0 0 0 /map /robot1/camera_init 10" />
+      <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0 0 0 0 0 0 /robot1/camera /robot1/base_link 10" />
+
+      <node pkg="rdc_slam" type="imageProjection"    name="imageProjection"    output="screen"/>
+      <node pkg="rdc_slam" type="featureAssociation" name="featureAssociation" output="screen"/>
+      <node pkg="rdc_slam" type="cslam"     name="cslam"     output="screen"/>
+      <node pkg="rdc_slam" type="transformFusion"    name="transformFusion"    output="screen"/>
+
+      <node pkg="rosbag" type="play" name="playbag" args="--clock xx.bag">
+        <remap from="/velodyne_points" to="velodyne_points"/>
+        <remap from="/gps_3d_pose" to="base_pose_ground_truth"/> 
+      </node>
+      
+    </group>
+    
+</launch>

@@ -1,0 +1,26 @@
+<launch>    
+    <group ns="robot0">
+
+      <param name="idRobot" value="1"/>
+      <param name="nRobots" value="2"/>
+      <param name="baseIdx" value="1000"/>
+      <param name="base_addr" value="192.168.0."/>
+      <param name="modality" value="real"/>
+      <remap from="/clock" to="clock"/>
+
+      <!--- Run Rviz-->
+      <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rdc_slam)/rviz/test.rviz" />
+
+      <!--- TF -->
+      <node pkg="tf" type="static_transform_publisher" name="camera_init_to_map"  args="0 0 0 0 0 0 /map /robot0/camera_init 10" />
+      <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0 0 0 0 0 0 /robot0/camera /robot0/base_link 10" />
+
+      <!--- rdc_slam -->    
+      <node pkg="rdc_slam" type="imageProjection"    name="imageProjection"    output="screen"/>
+      <node pkg="rdc_slam" type="featureAssociation" name="featureAssociation" output="screen"/>
+      <node pkg="rdc_slam" type="cslam"     name="cslam"     output="screen"/>
+      <node pkg="rdc_slam" type="transformFusion"    name="transformFusion"    output="screen"/>
+        
+    </group>
+
+</launch>
